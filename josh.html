@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Search</title>
+  <meta name="description" content="Lightweight, Google-style search landing page (for learning/demo use)." />
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#202124;
+      --muted:#5f6368;
+      --border:#dadce0;
+      --chip:#f8f9fa;
+      --shadow:0 1px 2px rgba(0,0,0,.06), 0 2px 8px rgba(0,0,0,.08);
+      --radius:24px;
+      --focus:#1a73e8;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root{
+        --bg:#111315;
+        --text:#e8eaed;
+        --muted:#9aa0a6;
+        --border:#303134;
+        --chip:#1f2225;
+        --shadow:0 1px 2px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.35);
+        --focus:#8ab4f8;
+      }
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      background:var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit;text-decoration:none}
+    a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--focus); outline-offset:2px; border-radius:6px}
+    header,footer{padding:12px 16px}
+    header nav, footer nav{display:flex; gap:18px; align-items:center; flex-wrap:wrap}
+    header{
+      display:flex; justify-content:space-between; align-items:center;
+    }
+    .spacer{flex:1}
+    .avatar{
+      width:32px;height:32px;border-radius:50%;background:var(--chip);
+      display:inline-grid;place-items:center;border:1px solid var(--border); font-weight:600; color:var(--muted)
+    }
+    main{
+      min-height:calc(100% - 124px); /* header + footer approx */
+      display:grid; place-items:center;
+      padding:24px 16px;
+    }
+    .stack{display:grid; place-items:center; gap:24px; width:100%; max-width:720px}
+    .logo{
+      font-size:64px; font-weight:800; letter-spacing:-1px;
+      display:flex; gap:4px; user-select:none
+    }
+    .logo span{display:inline-block}
+    .c1{color:#4285F4}
+    .c2{color:#DB4437}
+    .c3{color:#F4B400}
+    .c4{color:#0F9D58}
+    /* Search box */
+    .search-wrap{
+      width:100%;
+      background:var(--bg);
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:10px 14px;
+      display:flex; align-items:center; gap:10px;
+      box-shadow: none;
+      transition: box-shadow .15s ease, border-color .15s ease;
+    }
+    .search-wrap:hover{ box-shadow: var(--shadow) }
+    .icon{width:20px;height:20px;flex:0 0 20px;display:inline-block}
+    .input{
+      flex:1;
+      border:none; background:transparent; color:var(--text);
+      font-size:16px; line-height:24px; padding:6px 2px;
+    }
+    .input::placeholder{color:var(--muted)}
+    .input:focus{outline:none}
+    .chipbar{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+    .chip{
+      background:var(--chip); border:1px solid var(--border); color:var(--text);
+      padding:8px 14px; border-radius:999px; cursor:pointer;
+    }
+    .chip:active{transform:translateY(1px)}
+    footer{
+      border-top:1px solid var(--border);
+    }
+    .footer-grid{
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:8px 16px;
+      align-items:center;
+    }
+    .muted{color:var(--muted)}
+    .sr-only{
+      position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Bar -->
+  <header>
+    <nav>
+      <a href="#" aria-label="About">About</a>
+      <a href="#" aria-label="Store">Store</a>
+    </nav>
+    <div class="spacer" aria-hidden="true"></div>
+    <nav>
+      <a href="#" aria-label="Mail">Mail</a>
+      <a href="#" aria-label="Images">Images</a>
+      <button class="chip" aria-label="Sign in">Sign in</button>
+      <span class="avatar" aria-hidden="true">U</span>
+    </nav>
+  </header>
+
+  <!-- Center Section -->
+  <main>
+    <div class="stack">
+      <!-- Colorful wordmark-style text (not the Google logo) -->
+      <div class="logo" aria-label="Demo Search">
+        <span class="c1">S</span><span class="c2">e</span><span class="c3">a</span><span class="c4">r</span><span class="c1">c</span><span class="c2">h</span>
+      </div>
+
+      <!-- Search box -->
+      <form class="search-wrap" role="search" aria-label="Site search" onsubmit="return handleSubmit(event)">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 14 15.5l.27.28v.79l5 4.99L21.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/>
+        </svg>
+        <label for="q" class="sr-only">Search query</label>
+        <input id="q" class="input" name="q" type="text" placeholder="Search the web" autocomplete="off" />
+        <!-- Mic icon (decorative) -->
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 19v3h2v-3h-2z"/>
+        </svg>
+        <!-- Lens icon (decorative) -->
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5"></circle>
+          <path d="M21 21l-4.3-4.3"></path>
+        </svg>
+      </form>
+
+      <!-- Buttons -->
+      <div class="chipbar" aria-label="Actions">
+        <button class="chip" onclick="fakeSearch()">Search</button>
+        <button class="chip" onclick="feelingCurious()">I’m Feeling Curious</button>
+      </div>
+
+      <!-- Suggested quick links (optional) -->
+      <div class="muted" id="hint" aria-live="polite"></div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid muted">
+      <div>Country: India</div>
+      <nav>
+        <a href="#">Advertising</a> ·
+        <a href="#">Business</a> ·
+        <a href="#">How Search Works</a>
+      </nav>
+      <nav style="justify-self:end">
+        <a href="#">Privacy</a> ·
+        <a href="#">Terms</a> ·
+        <a href="#">Settings</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    function handleSubmit(e){
+      e.preventDefault();
+      const q = document.getElementById('q').value.trim();
+      if(!q){ document.getElementById('hint').textContent = "Type something to search."; return false; }
+      // For demo purposes, redirect to a real search engine with a query param.
+      // Replace with your own search results page if you have one.
+      const url = "https://duckduckgo.com/?q=" + encodeURIComponent(q);
+      window.location.href = url;
+      return false;
+    }
+    function fakeSearch(){
+      const form = document.querySelector('form[role="search"]');
+      form.requestSubmit();
+    }
+    function feelingCurious(){
+      const ideas = [
+        "why is the sky blue",
+        "how do eclipses work",
+        "best dosa batter tips",
+        "what is reinforcement learning",
+        "history of thanjavur temples"
+      ];
+      const pick = ideas[Math.floor(Math.random()*ideas.length)];
+      document.getElementById('q').value = pick;
+      fakeSearch();
+    }
+  </script>
+</body>
+</html>
